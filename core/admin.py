@@ -8,4 +8,6 @@ class RequestAdmin(admin.ModelAdmin):
     readonly_fields = ("reference_code",)
 
 
-admin.site.register(Shelter)
+@admin.register(Shelter)
+class ShelterAdmin(admin.ModelAdmin):
+    list_display = ("name", "location", "capacity", "occupancy")

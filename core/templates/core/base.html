@@ -1,0 +1,72 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>{% block title %}Msaada Response Network{% endblock %}</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Playfair+Display:wght@500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="{% static 'core/css/style.css' %}">
+</head>
+<body>
+
+  <header class="nav">
+    <div class="container nav-inner">
+      <a href="/" class="brand">
+        <svg class="brand-mark" viewBox="0 0 40 40" aria-hidden="true">
+          <circle cx="20" cy="20" r="20" fill="#1B4332"/>
+          <path d="M20 8c5 4 7 9 4 14-2 3-5 4-4 10-3-1-8-4-8-10 0-5 3-10 8-14z" fill="#F59E0B"/>
+          <path d="M11 24c3 0 6 2 9 6M29 24c-3 0-6 2-9 6" stroke="#FAF9F6" stroke-width="2" fill="none" stroke-linecap="round"/>
+        </svg>
+        <span class="brand-text"><strong>Msaada</strong><small>Response Network</small></span>
+      </a>
+
+      <button class="nav-toggle" type="button" aria-label="Open menu"
+              onclick="document.querySelector('.nav-links').classList.toggle('open')">&#9776;</button>
+
+      <nav class="nav-links">
+        <a href="/" class="{% if request.path == '/' %}active{% endif %}">Home</a>
+        <a href="/request/" class="{% if '/request' in request.path %}active{% endif %}">Request Help</a>
+        <a href="/offer/" class="{% if '/offer' in request.path %}active{% endif %}">Offer Resources</a>
+        <a href="/shelters/" class="{% if '/shelters' in request.path %}active{% endif %}">Find Help</a>
+        <a href="/status/" class="{% if '/status' in request.path %}active{% endif %}">Track Request</a>
+        <a href="/login/" class="btn btn-dark nav-cta">NGO Login</a>
+      </nav>
+    </div>
+  </header>
+
+  {% if messages %}
+  <div class="container messages">
+    {% for message in messages %}
+      <div class="message {{ message.tags }}">{{ message }}</div>
+    {% endfor %}
+  </div>
+  {% endif %}
+
+  <main>
+    {% block content %}{% endblock %}
+  </main>
+
+  <footer class="footer">
+    <div class="container footer-inner">
+      <a href="/" class="brand brand-light">
+        <svg class="brand-mark" viewBox="0 0 40 40" aria-hidden="true">
+          <circle cx="20" cy="20" r="20" fill="#FAF9F6"/>
+          <path d="M20 8c5 4 7 9 4 14-2 3-5 4-4 10-3-1-8-4-8-10 0-5 3-10 8-14z" fill="#1B4332"/>
+        </svg>
+        <span class="brand-text"><strong>Msaada</strong><small>Response Network</small></span>
+      </a>
+      <nav class="footer-links">
+        <a href="#">About Us</a>
+        <a href="#how-it-works">How It Works</a>
+        <a href="#">Contact</a>
+        <a href="#">Help</a>
+      </nav>
+      <p class="footer-tag">Stronger together.</p>
+    </div>
+  </footer>
+
+</body>
+</html>

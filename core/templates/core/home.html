@@ -1,0 +1,86 @@
+{% extends "core/base.html" %}
+
+{% block content %}
+
+<section class="hero">
+  <div class="container">
+    <p class="hero-eyebrow">Faster coordination. Stronger communities.</p>
+    <h1>Emergency relief<br>when it's needed most.</h1>
+    <p class="hero-lead">Msaada Response Network connects people affected by disasters with humanitarian organizations and resource providers.</p>
+
+    <div class="action-cards">
+      <a href="/request/" class="action-card action-card-primary">
+        <svg class="icon" viewBox="0 0 24 24"><circle cx="12" cy="8" r="4"/><path d="M4 21c0-4.4 3.6-8 8-8s8 3.6 8 8"/></svg>
+        <div>
+          <h3>Request Help</h3>
+          <p>Need assistance? Submit a request for yourself or someone else.</p>
+        </div>
+      </a>
+      <a href="/offer/" class="action-card">
+        <svg class="icon" viewBox="0 0 24 24"><path d="M12 3l8 4.5v9L12 21l-8-4.5v-9z"/><path d="M4 7.5l8 4.5 8-4.5M12 12v9"/></svg>
+        <div>
+          <h3>Offer Resources</h3>
+          <p>Have supplies, services or support to give? Let us know.</p>
+        </div>
+      </a>
+      <a href="/shelters/" class="action-card">
+        <svg class="icon" viewBox="0 0 24 24"><path d="M12 21s7-6.2 7-11a7 7 0 10-14 0c0 4.8 7 11 7 11z"/><circle cx="12" cy="10" r="2.5"/></svg>
+        <div>
+          <h3>Find Help</h3>
+          <p>Look for available assistance, shelters and useful information in your area.</p>
+        </div>
+      </a>
+    </div>
+  </div>
+</section>
+
+<section class="section" id="how-it-works">
+  <div class="container">
+    <h2>How Msaada works</h2>
+    <p class="section-lead">A simple way to get help, offer support and coordinate relief efforts.</p>
+
+    <ol class="steps">
+      <li>
+        <span class="step-num">1</span>
+        <h3>Submit a request or offer</h3>
+        <p>Share your needs or the resources you can provide.</p>
+      </li>
+      <li>
+        <span class="step-num">2</span>
+        <h3>Review and assess</h3>
+        <p>Organizations assess and prioritize requests.</p>
+      </li>
+      <li>
+        <span class="step-num">3</span>
+        <h3>Match and allocate</h3>
+        <p>Resources are matched and distributed.</p>
+      </li>
+      <li>
+        <span class="step-num">4</span>
+        <h3>Support and follow up</h3>
+        <p>Stay informed about progress and next steps.</p>
+      </li>
+    </ol>
+  </div>
+</section>
+
+<section class="section section-alt">
+  <div class="container ussd">
+    <div class="ussd-text">
+      <h2>Support beyond the website</h2>
+      <p>Not everyone has internet access. You can also use a basic phone to request help, offer resources or find assistance through USSD/SMS.</p>
+      <a href="#" class="btn btn-outline">Learn about USSD/SMS</a>
+    </div>
+    <div class="ussd-card">
+      <h3>Get help in 4 simple steps</h3>
+      <ol>
+        <li><span class="step-num">1</span> Dial *123#</li>
+        <li><span class="step-num">2</span> Select your option</li>
+        <li><span class="step-num">3</span> Follow the prompts</li>
+        <li><span class="step-num">4</span> Submit your request</li>
+      </ol>
+    </div>
+  </div>
+</section>
+
+{% endblock %}
