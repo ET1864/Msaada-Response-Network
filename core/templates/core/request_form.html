@@ -1,0 +1,222 @@
+{% extends "core/base.html" %}
+{% block title %}Request Help | Msaada Response Network{% endblock %}
+
+{% block content %}
+<section class="page-hero">
+  <div class="container">
+    <p class="hero-eyebrow">Request help</p>
+    <h1>You're not alone.<br>We're here to help.</h1>
+    <p class="hero-lead">Submit a request for assistance and we'll connect you with available support from humanitarian organizations and resource providers.</p>
+  </div>
+</section>
+
+<section class="section">
+  <div class="container form-layout">
+
+    <div>
+      <ol class="stepper" id="stepper">
+        <li class="active"><span>1</span>Your details</li>
+        <li><span>2</span>Needs and location</li>
+        <li><span>3</span>More information</li>
+        <li><span>4</span>Review and submit</li>
+      </ol>
+
+      <form method="post" id="request-form" class="form-card">
+        {% csrf_token %}
+        {{ form.non_field_errors }}
+
+        <!-- Step 1 -->
+        <div class="form-step">
+          <h2>1. Your details</h2>
+          <p class="step-lead">Tell us a little about yourself or the person you are requesting help for.</p>
+
+          <div class="field-grid">
+            <div class="field">
+              <label for="{{ form.submitted_by_name.id_for_label }}">Full name <span class="req">*</span></label>
+              {{ form.submitted_by_name }}{{ form.submitted_by_name.errors }}
+            </div>
+            <div class="field">
+              <label for="{{ form.email.id_for_label }}">Email address (optional)</label>
+              {{ form.email }}{{ form.email.errors }}
+            </div>
+            <div class="field">
+              <label for="{{ form.phone.id_for_label }}">Phone number <span class="req">*</span></label>
+              {{ form.phone }}{{ form.phone.errors }}
+            </div>
+          </div>
+
+          <div class="field">
+            <label>Are you requesting for yourself or someone else? <span class="req">*</span></label>
+            <div class="radio-group">{{ form.for_someone_else }}</div>
+            {{ form.for_someone_else.errors }}
+          </div>
+
+          <div id="someone-else-fields" class="field-grid" hidden>
+            <div class="field">
+              <label for="{{ form.beneficiary_name.id_for_label }}">Their full name <span class="req">*</span></label>
+              {{ form.beneficiary_name }}{{ form.beneficiary_name.errors }}
+            </div>
+            <div class="field">
+              <label for="{{ form.relationship.id_for_label }}">Your relationship to them</label>
+              {{ form.relationship }}{{ form.relationship.errors }}
+            </div>
+          </div>
+
+          <p class="note">Your information is safe with us. We only use your details to process your request and connect you with the right support.</p>
+
+          <div class="form-actions">
+            <button type="button" class="btn btn-dark" data-next>Next: needs and location</button>
+          </div>
+        </div>
+
+        <!-- Step 2 -->
+        <div class="form-step" hidden>
+          <h2>2. Needs and location</h2>
+          <p class="step-lead">What kind of help is needed, and where?</p>
+
+          <div class="field">
+            <label>What kind of help do you need? <span class="req">*</span></label>
+            <div class="need-options">{{ form.need_type }}</div>
+            {{ form.need_type.errors }}
+          </div>
+
+          <div class="field-grid">
+            <div class="field">
+              <label for="{{ form.people_count.id_for_label }}">How many people need help? <span class="req">*</span></label>
+              {{ form.people_count }}{{ form.people_count.errors }}
+            </div>
+            <div class="field">
+              <label for="{{ form.location.id_for_label }}">Where are they now? <span class="req">*</span></label>
+              {{ form.location }}{{ form.location.errors }}
+            </div>
+          </div>
+
+          <div class="form-actions">
+            <button type="button" class="btn btn-outline" data-back>Back</button>
+            <button type="button" class="btn btn-dark" data-next>Next: more information</button>
+          </div>
+        </div>
+
+        <!-- Step 3 -->
+        <div class="form-step" hidden>
+          <h2>3. More information</h2>
+          <p class="step-lead">Optional, but anything extra helps responders reach you faster.</p>
+
+          <div class="field">
+            <label for="{{ form.additional_info.id_for_label }}">Additional information</label>
+            {{ form.additional_info }}{{ form.additional_info.errors }}
+          </div>
+
+          <div class="form-actions">
+            <button type="button" class="btn btn-outline" data-back>Back</button>
+            <button type="button" class="btn btn-dark" data-next>Next: review</button>
+          </div>
+        </div>
+
+        <!-- Step 4 -->
+        <div class="form-step" hidden>
+          <h2>4. Review and submit</h2>
+          <p class="step-lead">Check your details. Use Back to change anything.</p>
+
+          <dl class="review" id="review"></dl>
+
+          <div class="form-actions">
+            <button type="button" class="btn btn-outline" data-back>Back</button>
+            <button type="submit" class="btn btn-dark">Submit request</button>
+          </div>
+        </div>
+      </form>
+    </div>
+
+    <aside>
+      <div class="side-panel">
+        <h3>Need urgent help?</h3>
+        <p>If you are in immediate danger, contact local emergency services or your nearest humanitarian organization first. Then submit this request so we can follow up.</p>
+      </div>
+    </aside>
+
+  </div>
+</section>
+
+<script>
+(function () {
+  const form = document.getElementById("request-form");
+  const steps = Array.from(form.querySelectorAll(".form-step"));
+  const dots = Array.from(document.querySelectorAll("#stepper li"));
+  const extra = document.getElementById("someone-else-fields");
+  const beneficiary = form.elements["beneficiary_name"];
+  let current = 0;
+
+  function syncWho() {
+    const other = form.elements["for_someone_else"].value === "True";
+    extra.hidden = !other;
+    beneficiary.required = other;
+  }
+  form.querySelectorAll('input[name="for_someone_else"]').forEach(function (r) {
+    r.addEventListener("change", syncWho);
+  });
+  syncWho();
+
+  function stepValid(i) {
+    const fields = steps[i].querySelectorAll("input, select, textarea");
+    for (const f of fields) {
+      if (!f.reportValidity()) return false;
+    }
+    return true;
+  }
+
+  function row(dl, label, value) {
+    if (!value) return;
+    const dt = document.createElement("dt");
+    const dd = document.createElement("dd");
+    dt.textContent = label;
+    dd.textContent = value;
+    dl.appendChild(dt);
+    dl.appendChild(dd);
+  }
+
+  function buildReview() {
+    const dl = document.getElementById("review");
+    dl.innerHTML = "";
+    const other = form.elements["for_someone_else"].value === "True";
+    const need = form.querySelector('input[name="need_type"]:checked');
+    row(dl, "Request is for", other ? "Someone else" : "Myself");
+    row(dl, "Your name", form.elements["submitted_by_name"].value);
+    row(dl, "Phone", form.elements["phone"].value);
+    row(dl, "Email", form.elements["email"].value);
+    if (other) {
+      row(dl, "Person in need", form.elements["beneficiary_name"].value);
+      row(dl, "Relationship", form.elements["relationship"].value);
+    }
+    row(dl, "Help needed", need ? need.parentElement.textContent.trim() : "");
+    row(dl, "People", form.elements["people_count"].value);
+    row(dl, "Location", form.elements["location"].value);
+    row(dl, "Additional information", form.elements["additional_info"].value);
+  }
+
+  function show(n) {
+    current = n;
+    steps.forEach(function (s, i) { s.hidden = i !== n; });
+    dots.forEach(function (d, i) {
+      d.classList.toggle("active", i === n);
+      d.classList.toggle("done", i < n);
+    });
+    if (n === steps.length - 1) buildReview();
+    window.scrollTo({ top: form.getBoundingClientRect().top + window.scrollY - 140, behavior: "smooth" });
+  }
+
+  form.querySelectorAll("[data-next]").forEach(function (b) {
+    b.addEventListener("click", function () {
+      if (stepValid(current)) show(current + 1);
+    });
+  });
+  form.querySelectorAll("[data-back]").forEach(function (b) {
+    b.addEventListener("click", function () { show(current - 1); });
+  });
+
+  // If the server sent the form back with errors, open the first step that has one.
+  const errorStep = steps.findIndex(function (s) { return s.querySelector(".errorlist"); });
+  show(errorStep >= 0 ? errorStep : 0);
+})();
+</script>
+{% endblock %}

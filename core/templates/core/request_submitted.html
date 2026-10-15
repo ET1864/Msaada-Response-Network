@@ -1,0 +1,34 @@
+{% extends "core/base.html" %}
+{% block title %}Request submitted | Msaada Response Network{% endblock %}
+
+{% block content %}
+<section class="section">
+  <div class="container">
+    <div class="center-card">
+      <div class="check">
+        <svg class="icon" viewBox="0 0 24 24"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg>
+      </div>
+      <h1 class="card-title">Request submitted</h1>
+      <p>Your request has been received. We'll review it and get back to you as soon as possible.</p>
+
+      <div class="ref-box">
+        <p class="ref-label">Your reference number</p>
+        <p class="ref-code">{{ req.reference_code }}</p>
+        <p class="ref-hint">Keep this number. You'll need it, with your phone number, to track your request.</p>
+      </div>
+
+      <h2 class="card-sub">What happens next</h2>
+      <ol class="next-steps">
+        <li><span class="step-num">1</span> Your request is reviewed by our team.</li>
+        <li><span class="step-num">2</span> We match you with available resources and support.</li>
+        <li><span class="step-num">3</span> We update you on the status of your request.</li>
+      </ol>
+
+      <div class="card-actions">
+        <a href="{% url 'track_request' %}?ref={{ req.reference_code }}" class="btn btn-dark">Track this request</a>
+        <a href="/" class="btn btn-outline">Back to homepage</a>
+      </div>
+    </div>
+  </div>
+</section>
+{% endblock %}
