@@ -214,7 +214,7 @@
     b.addEventListener("click", function () { show(current - 1); });
   });
 
-  // If the server sent the form back with errors, open the first step that has one.
+
   const errorStep = steps.findIndex(function (s) { return s.querySelector(".errorlist"); });
   show(errorStep >= 0 ? errorStep : 0);
 })();
