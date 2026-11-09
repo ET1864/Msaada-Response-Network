@@ -9,6 +9,7 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Playfair+Display:wght@500;600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="{% static 'core/css/style.css' %}">
+  <link rel="stylesheet" href="{% static 'core/css/extras.css' %}">
 </head>
 <body>
 
@@ -32,7 +33,12 @@
         <a href="/offer/" class="{% if '/offer' in request.path %}active{% endif %}">Offer Resources</a>
         <a href="/shelters/" class="{% if '/shelters' in request.path %}active{% endif %}">Find Help</a>
         <a href="/status/" class="{% if '/status' in request.path %}active{% endif %}">Track Request</a>
-        <a href="/login/" class="btn btn-dark nav-cta">Organization Login</a>
+                {% if user.is_authenticated %}
+          <a href="/dashboard/" class="btn btn-dark nav-cta">Dashboard</a>
+          <form method="post" action="{% url 'logout' %}" class="logout-form">{% csrf_token %}<button type="submit" class="logout-btn">Log out</button></form>
+        {% else %}
+          <a href="/login/" class="btn btn-dark nav-cta">Organization Login</a>
+        {% endif %}
       </nav>
     </div>
   </header>

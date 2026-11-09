@@ -1,0 +1,30 @@
+{% extends "core/base.html" %}
+{% block title %}Organization login | Msaada Response Network{% endblock %}
+
+{% block content %}
+<section class="section">
+  <div class="container">
+    <div class="login-wrap">
+      <h1 class="page-title">Organization login</h1>
+      <p class="section-lead">For registered humanitarian organizations. Accounts are created by the system administrator.</p>
+
+      <form method="post" class="form-card login-card">
+        {% csrf_token %}
+        {% if next %}<input type="hidden" name="next" value="{{ next }}">{% endif %}
+        {{ form.non_field_errors }}
+
+        <div class="field">
+          <label for="{{ form.username.id_for_label }}">Username</label>
+          {{ form.username }}{{ form.username.errors }}
+        </div>
+        <div class="field">
+          <label for="{{ form.password.id_for_label }}">Password</label>
+          {{ form.password }}{{ form.password.errors }}
+        </div>
+
+        <button type="submit" class="btn btn-dark">Log in</button>
+      </form>
+    </div>
+  </div>
+</section>
+{% endblock %}

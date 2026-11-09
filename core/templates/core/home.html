@@ -34,6 +34,17 @@
   </div>
 </section>
 
+<section class="incident-strip">
+  <div class="container">
+    {% if active_incidents %}
+      <strong>Active now:</strong>
+      {% for i in active_incidents %}<span class="incident-chip">{{ i.name }} <small>{{ i.get_hazard_type_display }}</small></span>{% endfor %}
+    {% else %}
+      <strong>Standby:</strong> there is no active incident right now. Msaada opens an incident when a disaster starts and closes it when relief ends.
+    {% endif %}
+  </div>
+</section>
+
 <section class="section" id="how-it-works">
   <div class="container">
     <h2>How Msaada works</h2>
