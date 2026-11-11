@@ -1,0 +1,4 @@
+<nav class="dash-tabs">
+  <a href="{% url 'dashboard' %}" class="{% if tab == 'requests' %}active{% endif %}">Requests</a>
+  <a href="{% url 'dashboard_offers' %}" class="{% if tab == 'offers' %}active{% endif %}">Offers{% if pending_offers %} <span class="tab-badge">{{ pending_offers }}</span>{% endif %}</a>
+</nav>

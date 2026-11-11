@@ -16,7 +16,7 @@
     <div>
       <ol class="stepper" id="stepper">
         <li class="active"><span>1</span>Your details</li>
-        <li><span>2</span>Needs and location</li>
+        <li><span>2</span>What you need</li>
         <li><span>3</span>More information</li>
         <li><span>4</span>Review and submit</li>
       </ol>
@@ -65,19 +65,41 @@
           <p class="note">Your information is safe with us. We only use your details to process your request and connect you with the right support.</p>
 
           <div class="form-actions">
-            <button type="button" class="btn btn-dark" data-next>Next: needs and location</button>
+            <button type="button" class="btn btn-dark" data-next>Next: what you need</button>
           </div>
         </div>
 
         <!-- Step 2 -->
-        <div class="form-step" hidden>
-          <h2>2. Needs and location</h2>
-          <p class="step-lead">What kind of help is needed, and where?</p>
+        <div class="form-step offer-section" hidden>
+          <h2>2. What you need</h2>
+          <p class="step-lead">Choose from what is available now and say how much you need. Leave the rest at 0.</p>
 
-          <div class="field">
-            <label>What kind of help do you need? <span class="req">*</span></label>
-            <div class="need-options">{{ form.need_type }}</div>
-            {{ form.need_type.errors }}
+          {% if item_error %}<ul class="errorlist"><li>{{ item_error }}</li></ul>{% endif %}
+          <p class="field-error" id="items-error" hidden>Choose at least one item, or describe what you need below.</p>
+
+          {% for category, offers in offers_by_category %}
+            <h3 class="cat-title">{{ category }}</h3>
+            {% for o in offers %}
+              <div class="offer-row">
+                <div>
+                  <label for="qty_{{ o.pk }}"><strong>{{ o.item.name }}</strong></label>
+                  <small>{{ o.quantity_available }} {{ o.item.unit }} available &middot; {{ o.location }} &middot; {{ o.offered_by }}</small>
+                </div>
+                <div class="qty-box">
+                  <input type="number" class="qty-input" id="qty_{{ o.pk }}" name="qty_{{ o.pk }}"
+                         min="0" max="{{ o.quantity_available }}" value="{{ o.chosen|default:'0' }}"
+                         data-name="{{ o.item.name }}" data-unit="{{ o.item.unit }}">
+                  <span>{{ o.item.unit }}</span>
+                </div>
+              </div>
+            {% endfor %}
+          {% empty %}
+            <p class="note">Nothing is listed as available right now. Describe what you need below and an organization will follow up.</p>
+          {% endfor %}
+
+          <div class="field other-need">
+            <label for="other_need">Something not listed?</label>
+            <textarea id="other_need" name="other_need" rows="3" maxlength="300" placeholder="Describe what you need">{{ other_need }}</textarea>
           </div>
 
           <div class="field-grid">
@@ -157,10 +179,22 @@
   });
   syncWho();
 
+  function itemsChosen() {
+    const any = Array.from(form.querySelectorAll(".qty-input")).some(function (i) {
+      return parseInt(i.value, 10) > 0;
+    });
+    return any || form.elements["other_need"].value.trim() !== "";
+  }
+
   function stepValid(i) {
     const fields = steps[i].querySelectorAll("input, select, textarea");
     for (const f of fields) {
       if (!f.reportValidity()) return false;
+    }
+    if (steps[i].classList.contains("offer-section")) {
+      const ok = itemsChosen();
+      document.getElementById("items-error").hidden = ok;
+      if (!ok) return false;
     }
     return true;
   }
@@ -179,7 +213,11 @@
     const dl = document.getElementById("review");
     dl.innerHTML = "";
     const other = form.elements["for_someone_else"].value === "True";
-    const need = form.querySelector('input[name="need_type"]:checked');
+    const items = [];
+    form.querySelectorAll(".qty-input").forEach(function (inp) {
+      const q = parseInt(inp.value, 10);
+      if (q > 0) items.push(inp.dataset.name + ": " + q + " " + inp.dataset.unit);
+    });
     row(dl, "Request is for", other ? "Someone else" : "Myself");
     row(dl, "Your name", form.elements["submitted_by_name"].value);
     row(dl, "Phone", form.elements["phone"].value);
@@ -188,7 +226,8 @@
       row(dl, "Person in need", form.elements["beneficiary_name"].value);
       row(dl, "Relationship", form.elements["relationship"].value);
     }
-    row(dl, "Help needed", need ? need.parentElement.textContent.trim() : "");
+    row(dl, "Items", items.join(", "));
+    row(dl, "Something else", form.elements["other_need"].value);
     row(dl, "People", form.elements["people_count"].value);
     row(dl, "Location", form.elements["location"].value);
     row(dl, "Additional information", form.elements["additional_info"].value);
@@ -214,8 +253,9 @@
     b.addEventListener("click", function () { show(current - 1); });
   });
 
-
+  // If the server sent the form back with errors, open the first step that has one.
   const errorStep = steps.findIndex(function (s) { return s.querySelector(".errorlist"); });
+  // If someone arrived from Find Help with an item chosen, start at step 1 as normal.
   show(errorStep >= 0 ? errorStep : 0);
 })();
 </script>

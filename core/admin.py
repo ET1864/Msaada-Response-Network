@@ -1,6 +1,11 @@
 from django.contrib import admin
 
-from .models import Incident, Item, Request, ResourceOffer, Shelter
+from .models import Incident, Item, Request, RequestItem, ResourceOffer, Shelter
+
+
+class RequestItemInline(admin.TabularInline):
+    model = RequestItem
+    extra = 0
 
 
 @admin.register(Request)
@@ -8,6 +13,7 @@ class RequestAdmin(admin.ModelAdmin):
     list_display = ("reference_code", "incident", "location", "need_type", "people_count", "priority", "status")
     list_filter = ("status", "priority", "incident")
     readonly_fields = ("reference_code",)
+    inlines = [RequestItemInline]
 
 
 @admin.register(Shelter)

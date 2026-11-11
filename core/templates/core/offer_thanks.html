@@ -1,0 +1,20 @@
+{% extends "core/base.html" %}
+{% block title %}Offer received | Msaada Response Network{% endblock %}
+
+{% block content %}
+<section class="section">
+  <div class="container">
+    <div class="center-card">
+      <div class="check">
+        <svg class="icon" viewBox="0 0 24 24"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg>
+      </div>
+      <h1 class="card-title">Thank you</h1>
+      <p>Your offer has been received. An organization will check it, and then it will appear on Find Help.</p>
+      <div class="card-actions" style="margin-top: 24px;">
+        <a href="{% url 'find_help' %}" class="btn btn-dark">See Find Help</a>
+        <a href="/" class="btn btn-outline">Back to homepage</a>
+      </div>
+    </div>
+  </div>
+</section>
+{% endblock %}

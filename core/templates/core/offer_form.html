@@ -1,0 +1,67 @@
+{% extends "core/base.html" %}
+{% block title %}Offer Resources | Msaada Response Network{% endblock %}
+
+{% block content %}
+<section class="page-hero">
+  <div class="container">
+    <p class="hero-eyebrow">Offer resources</p>
+    <h1>Have something to give?<br>Let us know.</h1>
+    <p class="hero-lead">Supplies, services or support. Once an organization checks your offer, people affected by the disaster can see it and request it.</p>
+  </div>
+</section>
+
+<section class="section">
+  <div class="container form-layout">
+    <div>
+      <form method="post" class="form-card">
+        {% csrf_token %}
+        {{ form.non_field_errors }}
+
+        <div class="field">
+          <label for="{{ form.item.id_for_label }}">{{ form.item.label }} <span class="req">*</span></label>
+          {{ form.item }}{{ form.item.errors }}
+        </div>
+
+        <div class="field-grid">
+          <div class="field">
+            <label for="{{ form.quantity_available.id_for_label }}">{{ form.quantity_available.label }} <span class="req">*</span></label>
+            {{ form.quantity_available }}{{ form.quantity_available.errors }}
+          </div>
+          <div class="field">
+            <label for="{{ form.valid_hours.id_for_label }}">{{ form.valid_hours.label }}</label>
+            {{ form.valid_hours }}{{ form.valid_hours.errors }}
+          </div>
+          <div class="field">
+            <label for="{{ form.location.id_for_label }}">{{ form.location.label }} <span class="req">*</span></label>
+            {{ form.location }}{{ form.location.errors }}
+          </div>
+          <div class="field">
+            <label for="{{ form.offered_by.id_for_label }}">{{ form.offered_by.label }} <span class="req">*</span></label>
+            {{ form.offered_by }}{{ form.offered_by.errors }}
+          </div>
+          <div class="field">
+            <label for="{{ form.contact_phone.id_for_label }}">{{ form.contact_phone.label }} <span class="req">*</span></label>
+            {{ form.contact_phone }}{{ form.contact_phone.errors }}
+          </div>
+        </div>
+
+        <p class="note">Your phone number is only shown to registered organizations, never on the public page.</p>
+
+        <div class="form-actions">
+          <button type="submit" class="btn btn-dark">Submit offer</button>
+        </div>
+      </form>
+    </div>
+
+    <aside>
+      <div class="side-panel">
+        <h3>How it works</h3>
+        <p>An organization verifies your offer. Then it appears on Find Help until it runs out or expires.</p>
+        {% if incident %}
+          <p class="panel-gap">Showing items that fit the active incident: <strong>{{ incident.name }}</strong> ({{ incident.get_hazard_type_display }}).</p>
+        {% endif %}
+      </div>
+    </aside>
+  </div>
+</section>
+{% endblock %}

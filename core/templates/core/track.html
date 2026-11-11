@@ -33,7 +33,11 @@
           <span class="pill pill-{{ result.status|slugify }}">{{ result.status }}</span>
         </div>
         <dl class="review">
-          <dt>Help needed</dt><dd>{{ result.get_need_type_display }}</dd>
+          <dt>Items</dt>
+          <dd>
+            {% for l in result.lines.all %}{{ l.item.name }}: {{ l.quantity }} {{ l.item.unit }}{% if not forloop.last %}, {% endif %}{% empty %}{{ result.get_need_type_display }}{% endfor %}
+            {% if result.other_need %}<br>Other: {{ result.other_need }}{% endif %}
+          </dd>
           <dt>People</dt><dd>{{ result.people_count }}</dd>
           <dt>Location</dt><dd>{{ result.location }}</dd>
           <dt>Priority</dt><dd>{{ result.priority }}</dd>

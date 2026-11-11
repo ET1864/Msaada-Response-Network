@@ -1,7 +1,7 @@
 from django import forms
-from django.core.validators import RegexValidator
+from django.core.validators import MinValueValidator, RegexValidator
 
-from .models import Request
+from .models import Item, Request, ResourceOffer
 
 phone_validator = RegexValidator(
     r"^\+?[0-9 ]{9,15}$",
@@ -16,17 +16,13 @@ class HelpRequestForm(forms.ModelForm):
         widget=forms.RadioSelect,
         initial="False",
     )
-    need_type = forms.ChoiceField(
-        choices=Request.NEED_CHOICES,
-        widget=forms.RadioSelect,
-    )
 
     class Meta:
         model = Request
         fields = [
             "submitted_by_name", "phone", "email",
             "for_someone_else", "beneficiary_name", "relationship",
-            "need_type", "people_count", "location", "additional_info",
+            "people_count", "location", "additional_info",
         ]
         widgets = {
             "submitted_by_name": forms.TextInput(attrs={"placeholder": "e.g. John Mwangi", "autocomplete": "name"}),
@@ -52,3 +48,41 @@ class HelpRequestForm(forms.ModelForm):
             data["beneficiary_name"] = ""
             data["relationship"] = ""
         return data
+
+
+class OfferForm(forms.ModelForm):
+    valid_hours = forms.ChoiceField(
+        choices=[("24", "24 hours"), ("48", "48 hours"), ("72", "72 hours")],
+        initial="72",
+        label="This offer stays valid for",
+    )
+
+    class Meta:
+        model = ResourceOffer
+        fields = ["item", "offered_by", "contact_phone", "quantity_available", "location"]
+        labels = {
+            "item": "What can you offer?",
+            "offered_by": "Your name or organization",
+            "contact_phone": "Phone number",
+            "quantity_available": "How much can you provide?",
+            "location": "Where is it available?",
+        }
+        widgets = {
+            "offered_by": forms.TextInput(attrs={"placeholder": "e.g. Kisumu Relief Group"}),
+            "contact_phone": forms.TextInput(attrs={"type": "tel", "placeholder": "e.g. 07XX XXX XXX"}),
+            "quantity_available": forms.NumberInput(attrs={"min": 1}),
+            "location": forms.TextInput(attrs={"placeholder": "e.g. Kondele, Kisumu"}),
+        }
+
+    def __init__(self, *args, incident=None, **kwargs):
+        super().__init__(*args, **kwargs)
+        items = Item.objects.all()
+        if incident is not None:
+            # Show only the items that fit this kind of disaster.
+            keep = [i.pk for i in items if i.relevant_for(incident.hazard_type)]
+            items = items.filter(pk__in=keep)
+        self.fields["item"].queryset = items
+        self.fields["item"].empty_label = "Choose an item"
+        self.fields["item"].label_from_instance = lambda i: f"{i.get_category_display()}: {i.name} ({i.unit})"
+        self.fields["contact_phone"].validators.append(phone_validator)
+        self.fields["quantity_available"].validators.append(MinValueValidator(1))

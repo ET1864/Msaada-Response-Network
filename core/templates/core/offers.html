@@ -1,0 +1,52 @@
+{% extends "core/base.html" %}
+{% block title %}Offers | Msaada Response Network{% endblock %}
+
+{% block content %}
+<section class="section">
+  <div class="container">
+    <h1 class="page-title">Organization dashboard</h1>
+    <p class="section-lead">Check each offer and set it to Active so it appears on Find Help. Offers shown as Pending are waiting for you.</p>
+
+    {% include "core/_dash_tabs.html" with tab="offers" %}
+
+    <div class="table-wrap">
+      <table class="dash-table">
+        <thead>
+          <tr>
+            <th>Item</th>
+            <th>Quantity left</th>
+            <th>Offered by</th>
+            <th>Location</th>
+            <th>Valid until</th>
+            <th>Status</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for o in offers %}
+          <tr>
+            <td><strong>{{ o.item.name }}</strong><br><small>{{ o.item.get_category_display }}</small></td>
+            <td>{{ o.quantity_available }} {{ o.item.unit }}</td>
+            <td>{{ o.offered_by }}<br><small>{{ o.contact_phone }}</small></td>
+            <td>{{ o.location }}</td>
+            <td>{{ o.valid_until|date:"j M, H:i" }}{% if o.expired %}<span class="flag">Expired</span>{% endif %}</td>
+            <td>
+              <form method="post" action="{% url 'update_offer' o.pk %}" class="row-form">
+                {% csrf_token %}
+                <select name="status" aria-label="Status">
+                  {% for value, label in statuses %}
+                    <option value="{{ value }}" {% if o.status == value %}selected{% endif %}>{{ label }}</option>
+                  {% endfor %}
+                </select>
+                <button type="submit" class="btn btn-dark btn-small">Save</button>
+              </form>
+            </td>
+          </tr>
+          {% empty %}
+          <tr><td colspan="6">No offers yet.</td></tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </div>
+</section>
+{% endblock %}

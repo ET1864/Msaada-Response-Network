@@ -1,0 +1,54 @@
+{% extends "core/base.html" %}
+{% block title %}Find Help | Msaada Response Network{% endblock %}
+
+{% block content %}
+<section class="page-hero">
+  <div class="container">
+    <p class="hero-eyebrow">Find help</p>
+    <h1>See what is available<br>near you.</h1>
+    <p class="hero-lead">Resources offered by verified organizations and individuals, and shelters with free places. Pick what you need and request it.</p>
+  </div>
+</section>
+
+<section class="section">
+  <div class="container">
+    <h2>Available now</h2>
+    <p class="section-lead">Quantities update as requests are approved.</p>
+
+    {% for category, offers in groups %}
+      <h3 class="cat-title">{{ category }}</h3>
+      <div class="card-grid">
+        {% for o in offers %}
+          <div class="avail-card">
+            <h3>{{ o.item.name }}</h3>
+            <p class="avail-qty">{{ o.quantity_available }} {{ o.item.unit }} available</p>
+            <p class="avail-meta">{{ o.location }}<br>Offered by {{ o.offered_by }}<br>Valid until {{ o.valid_until|date:"j M, H:i" }}</p>
+            <a class="btn btn-dark btn-small" href="{% url 'request_help' %}?offer={{ o.pk }}">Request this</a>
+          </div>
+        {% endfor %}
+      </div>
+    {% empty %}
+      <p class="note">Nothing is listed as available right now. You can still <a href="{% url 'request_help' %}"><u>submit a request</u></a> and an organization will follow up.</p>
+    {% endfor %}
+  </div>
+</section>
+
+<section class="section section-alt">
+  <div class="container">
+    <h2>Shelters</h2>
+    <p class="section-lead">Places that can host people, with the number of free places.</p>
+
+    <div class="card-grid">
+      {% for s in shelters %}
+        <div class="avail-card">
+          <h3>{{ s.name }}</h3>
+          <p class="avail-qty">{{ s.free }} places free <small>of {{ s.capacity }}</small></p>
+          <p class="avail-meta">{{ s.location }}{% if s.assistance_available %}<br>{{ s.assistance_available }}{% endif %}</p>
+        </div>
+      {% empty %}
+        <p>No shelters are listed yet.</p>
+      {% endfor %}
+    </div>
+  </div>
+</section>
+{% endblock %}

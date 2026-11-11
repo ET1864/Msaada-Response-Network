@@ -40,6 +40,7 @@ class Request(models.Model):
     priority = models.CharField(max_length=10, choices=PRIORITY_CHOICES, default="Medium")
     status = models.CharField(max_length=20, choices=STATUS_CHOICES, default="Pending")
     incident = models.ForeignKey("Incident", null=True, blank=True, on_delete=models.SET_NULL, related_name="requests")
+    other_need = models.CharField(max_length=300, blank=True)
     created_at = models.DateTimeField(auto_now_add=True)
 
     def save(self, *args, **kwargs):
@@ -149,3 +150,13 @@ class ResourceOffer(models.Model):
 
     def __str__(self):
         return f"{self.item.name}: {self.quantity_available} {self.item.unit} ({self.offered_by})"
+
+class RequestItem(models.Model):
+    help_request = models.ForeignKey(Request, on_delete=models.CASCADE, related_name="lines")
+    offer = models.ForeignKey(ResourceOffer, null=True, blank=True, on_delete=models.SET_NULL, related_name="request_lines")
+    item = models.ForeignKey(Item, on_delete=models.PROTECT)
+    quantity = models.PositiveIntegerField()
+    reserved = models.BooleanField(default=False)
+
+    def __str__(self):
+        return f"{self.item.name} x {self.quantity} ({self.help_request.reference_code})"

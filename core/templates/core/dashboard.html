@@ -5,7 +5,9 @@
 <section class="section">
   <div class="container">
     <h1 class="page-title">Organization dashboard</h1>
-    <p class="section-lead">Review incoming requests, set their priority and update their status.</p>
+    <p class="section-lead">Review incoming requests, set their priority and update their status. Approving a request reserves the stock it asked for.</p>
+
+    {% include "core/_dash_tabs.html" with tab="requests" %}
 
     <div class="stat-row">
       {% for label, n in counts %}
@@ -40,7 +42,7 @@
           <tr>
             <th>Reference</th>
             <th>Contact</th>
-            <th>Help needed</th>
+            <th>Items requested</th>
             <th>People</th>
             <th>Location</th>
             <th>Incident</th>
@@ -60,8 +62,13 @@
               {% if r.for_someone_else %}<br><small>For: {{ r.beneficiary_name }}</small>{% endif %}
             </td>
             <td>
-              {{ r.get_need_type_display }}
-              {% if r.additional_info %}<br><small>{{ r.additional_info|truncatechars:60 }}</small>{% endif %}
+              {% for l in r.lines.all %}
+                {{ l.item.name }}: {{ l.quantity }} {{ l.item.unit }}{% if l.reserved %} <span class="reserved">reserved</span>{% endif %}<br>
+              {% empty %}
+                {{ r.get_need_type_display }}<br>
+              {% endfor %}
+              {% if r.other_need %}<small>Other: {{ r.other_need }}</small><br>{% endif %}
+              {% if r.additional_info %}<small>{{ r.additional_info|truncatechars:60 }}</small>{% endif %}
             </td>
             <td>{{ r.people_count }}</td>
             <td>{{ r.location }}</td>

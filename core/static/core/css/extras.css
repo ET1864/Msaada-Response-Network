@@ -33,3 +33,37 @@
 .dash-table small { color: var(--muted); }
 .flag { display: block; margin-top: 4px; width: fit-content; padding: 2px 8px; border-radius: 999px; background: var(--pending-bg); color: var(--pending-fg); font-size: 0.72rem; font-weight: 600; }
 .row-form { display: flex; flex-wrap: wrap; gap: 6px; align-items: center; min-width: 260px; }
+
+
+/* ===== Offers, Find Help and request picking ===== */
+.field-error { color: #B42318; font-size: 0.85rem; margin: 6px 0 12px; }
+
+.cat-title { font-size: 1.05rem; margin: 22px 0 10px; color: var(--green); }
+
+.offer-row { display: flex; justify-content: space-between; align-items: center; gap: 16px; padding: 12px 14px; border: 1px solid #CFCBC1; border-radius: 8px; margin-bottom: 10px; }
+.offer-row label { display: block; margin: 0; font-weight: 500; }
+.offer-row small { color: var(--muted); }
+.qty-box { display: flex; align-items: center; gap: 8px; white-space: nowrap; color: var(--muted); font-size: 0.9rem; }
+.form-card .offer-row input.qty-input { width: 90px; padding: 8px 10px; }
+.other-need { margin-top: 24px; }
+.panel-gap { margin-top: 12px; }
+
+.card-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); gap: 16px; }
+.avail-card { background: #fff; border: 1px solid var(--line); border-radius: 12px; padding: 18px; display: flex; flex-direction: column; gap: 8px; }
+.avail-card h3 { font-size: 1.1rem; }
+.avail-qty { font-weight: 600; color: var(--green); }
+.avail-qty small { font-weight: 400; color: var(--muted); }
+.avail-meta { font-size: 0.88rem; color: var(--muted); flex: 1; }
+.avail-card .btn { align-self: flex-start; }
+
+/* Dashboard tabs and small badges */
+.dash-tabs { display: flex; gap: 6px; margin-bottom: 20px; border-bottom: 1px solid var(--line); }
+.dash-tabs a { padding: 10px 18px; font-weight: 500; border-bottom: 3px solid transparent; margin-bottom: -1px; }
+.dash-tabs a:hover { color: var(--green); }
+.dash-tabs a.active { color: var(--green); border-bottom-color: var(--green); }
+.tab-badge { display: inline-block; min-width: 22px; padding: 1px 7px; border-radius: 999px; background: var(--amber); color: var(--charcoal); font-size: 0.75rem; font-weight: 700; text-align: center; }
+.reserved { display: inline-block; padding: 1px 8px; border-radius: 999px; background: var(--approved-bg); color: var(--approved-fg); font-size: 0.72rem; font-weight: 600; }
+
+@media (max-width: 860px) {
+  .offer-row { flex-direction: column; align-items: flex-start; }
+}

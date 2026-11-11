@@ -29,7 +29,7 @@ CATALOGUE = [
 
 
 class Command(BaseCommand):
-    help = "Create demo data: Organization group, item catalogue, a demo incident, shelters, offers and requests."
+    help = "Create demo data, or refresh it: catalogue, demo incident, shelters, offers and requests."
 
     def handle(self, *args, **options):
         Group.objects.get_or_create(name="Organization")
@@ -56,8 +56,9 @@ class Command(BaseCommand):
                       "assistance_available": "Shelter, water"},
         )
 
+        until = timezone.now() + timedelta(hours=72)
+
         if ResourceOffer.objects.count() == 0:
-            until = timezone.now() + timedelta(hours=72)
             demo_offers = [
                 ("Drinking water", "Demo Relief Group", 5000, "Kondele, Kisumu"),
                 ("Place in a shelter", "Demo Relief Group", 120, "Kondele Community Hall"),
@@ -73,6 +74,13 @@ class Command(BaseCommand):
                     valid_until=until, status="Active",
                 )
 
+        # Running this command again renews the demo offers, so they do not expire before a demo.
+        for offer in ResourceOffer.objects.filter(offered_by__startswith="Demo"):
+            offer.valid_until = until
+            if offer.status == "Expired":
+                offer.status = "Active"
+            offer.save()
+
         if Request.objects.count() < 3:
             demo_requests = [
                 ("Demo Amina (demo)", "0700000001", "shelter", 4, "Mamboleo, Kisumu", "High", "Pending"),
@@ -87,5 +95,5 @@ class Command(BaseCommand):
                 )
 
         self.stdout.write(self.style.SUCCESS(
-            "Demo data ready. Create an organization user in the admin and add them to the 'Organization' group."
+            "Demo data ready. Offers are valid for another 72 hours."
         ))
